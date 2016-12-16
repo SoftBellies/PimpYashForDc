@@ -1,6 +1,6 @@
 <?php
 # -- BEGIN LICENSE BLOCK ----------------------------------
-# This file is part of yash, a plugin for Dotclear 2.
+# This file is part of yash3, a plugin for Dotclear 2.
 #
 # Copyright (c) Franck Paul and contributors
 # carnet.franck.paul@gmail.com
@@ -10,7 +10,7 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
-class yashBehaviors
+class yash3Behaviors
 {
 	public static function adminPostEditor($editor='',$context='',array $tags=array(),$syntax='')
 	{
@@ -19,17 +19,17 @@ class yashBehaviors
 		if ($editor != 'dcLegacyEditor') return;
 
 		return
-		dcPage::jsLoad(urldecode(dcPage::getPF('yash/js/post.js')),$core->getVersion('yash')).
+		dcPage::jsLoad(urldecode(dcPage::getPF('yash3/js/post.js')),$core->getVersion('yash')).
 		'<script type="text/javascript">'."\n".
 		"//<![CDATA[\n".
-		dcPage::jsVar('jsToolBar.prototype.elements.yash.title',__('Highlighted Code')).
+		dcPage::jsVar('jsToolBar.prototype.elements.yash3.title',__('Highlighted Code')).
 		"\n//]]>\n".
 		"</script>\n";
 	}
 
 	public static function coreInitWikiPost($wiki2xhtml)
 	{
-		$wiki2xhtml->registerFunction('macro:yash',array('yashBehaviors','transform'));
+		$wiki2xhtml->registerFunction('macro:yash3',array('yashBehaviors','transform'));
 	}
 
 	public static function transform($text,$args)

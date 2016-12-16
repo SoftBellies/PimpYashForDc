@@ -1,7 +1,12 @@
 <?php
 # ***** BEGIN LICENSE BLOCK *****
-# This file is part of YASH, a plugin for DotClear2.
-# Copyright (c) 2008 Pep and contributors. All rights
+# This file is part of YASH3, a plugin for DotClear2.
+# Forked by (c) Gnieark https://blog-du-grouik.tinad.fr 2016
+# licensed as GPL V2
+# including minify function by tovic https://gist.github.com/tovic/d7b310dea3b33e4732c0
+# no explicit license
+#
+# Original dev is: Yash Copyright (c) 2008 Pep and contributors. All rights
 # reserved.
 #
 # This plugin is free software; you can redistribute it and/or modify
@@ -22,14 +27,59 @@
 
 if (!defined('DC_CONTEXT_ADMIN')) { exit; }
 
+
+function _yash3_minify_js($input)
+{
+    return preg_replace(
+        array( '#\s*\/\/.*$#m', '#\s*([!%&*\(\)\-=+\[\]\{\}|;:,.<>?\/])\s*#', 
+	    '#[;,]([\]\}])#', '#\btrue\b#', '#\bfalse\b#', '#\breturn\s+#' ),
+        array( "", '$1', '$1', '!0', '!1', 'return '),
+	$input
+    );
+}
+function yash3_minify_js($input)
+{
+    if( ! $input = trim($input)) return $input;
+    // Create chunk(s) of string(s), comment(s), regex(es) and text
+    global $SS, $CC;
+    $input = preg_split('#(' . $SS . '|' . $CC . '|\/[^\n]+?\/(?=[.,;]|[gimuy]|$))#', 
+			  $input, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+    $output = "";
+    foreach($input as $v)
+    {
+        if(trim($v) === "") continue;
+        if(
+            ($v[0] === '"' && substr($v, -1) === '"') ||
+            ($v[0] === "'" && substr($v, -1) === "'") ||
+            ($v[0] === '/' && substr($v, -1) === '/')
+        ){
+            // Remove if not detected as important comment ...
+            if(strpos($v, '//') === 0 || (strpos($v, '/*') === 0 && strpos($v, '/*!') !== 0 && strpos($v, '/*@cc_on') !== 0)) continue;
+            $output .= $v; // String, comment or regex ...
+        } else {
+            $output .= _yash3_minify_js($v);
+        }
+    }
+    return preg_replace(
+        array(
+            '#(' . $CC . ')|([\{,])([\'])(\d+|[a-z_]\w*)\3(?=:)#i',
+            '#([\w\)\]])\[([\'"])([a-z_]\w*)\2\]#i'
+        ),
+        array(
+            '$1$2$4',
+            '$1.$3'
+        ),
+    $output);
+}
+
 // Setting default parameters if missing configuration
-$core->blog->settings->addNamespace('yash');
-if (is_null($core->blog->settings->yash->yash_active)) {
+$core->blog->settings->addNamespace('yash3');
+if (is_null($core->blog->settings->yash3->yash3_active)) {
 	try {
 		// Default state is active if the comments are configured to allow wiki syntax
-		$core->blog->settings->yash->put('yash_active',false,'boolean',true);
-		$core->blog->settings->yash->put('yash_theme','Default','string',true);
-		$core->blog->settings->yash->put('yash_custom_css','','string',true);
+		$core->blog->settings->yash3->put('yash3_active',false,'boolean',true);
+		$core->blog->settings->yash3->put('yash3_theme','Default','string',true);
+		$core->blog->settings->yash3->put('yash3_custom_css','','string',true);
 		$core->blog->triggerBlog();
 		http::redirect($p_url);
 	}
@@ -39,12 +89,12 @@ if (is_null($core->blog->settings->yash->yash_active)) {
 }
 
 // Getting current parameters
-$active = (boolean)$core->blog->settings->yash->yash_active;
-$theme = (string)$core->blog->settings->yash->yash_theme;
-$custom_css = (string)$core->blog->settings->yash->yash_custom_css;
+$active = (boolean)$core->blog->settings->yash3->yash3_active;
+$theme = (string)$core->blog->settings->yash3->yash3_theme;
+$custom_css = (string)$core->blog->settings->yash3->yash3_custom_css;
 
 if (!empty($_REQUEST['popup'])) {
-	$yash_brushes = array(
+	$yash3_brushes = array(
 		'plain' 		=> __('Plain Text'),
 		'applescript'	=> __('AppleScript'),
 		'as3'			=> __('ActionScript3'),
@@ -80,15 +130,15 @@ if (!empty($_REQUEST['popup'])) {
 		'<html>'.
 		'<head>'.
 	  	'<title>'.__('YASH - Syntax Selector').'</title>'.
-	  	dcPage::jsLoad(urldecode(dcPage::getPF('yash/js/popup.js')),$core->getVersion('yash')).
+	  	dcPage::jsLoad(urldecode(dcPage::getPF('yash3/js/popup.js')),$core->getVersion('yash3')).
 		'</head>'.
 		'<body>'.
 		'<h2>'.__('YASH - Syntax Selector').'</h2>'.
-		'<form id="yash-form" action="'.$p_url.'&amp;popup=1" method="get">'.
+		'<form id="yash3-form" action="'.$p_url.'&amp;popup=1" method="get">'.
 		'<p><label>'.__('Select the primary syntax of your code snippet.').
-		form::combo('syntax',array_flip($yash_brushes)).'</label></p>'.
-		'<p><a id="yash-cancel" class="button" href="#">'.__('Cancel').'</a> - '.
-		'<strong><a id="yash-ok" class="button" href="#">'.__('Ok').'</a></strong></p>'.
+		form::combo('syntax',array_flip($yash3_brushes)).'</label></p>'.
+		'<p><a id="yash3-cancel" class="button" href="#">'.__('Cancel').'</a> - '.
+		'<strong><a id="yash3-ok" class="button" href="#">'.__('Ok').'</a></strong></p>'.
 		'</form>'.
 		'</body>'.
 		'</html>';
@@ -99,13 +149,30 @@ if (!empty($_REQUEST['popup'])) {
 if (!empty($_POST['saveconfig'])) {
 	try
 	{
-		$core->blog->settings->addNameSpace('yash');
+		$core->blog->settings->addNameSpace('yash3');
 		$active = (empty($_POST['active'])) ? false : true;
 		$theme = (empty($_POST['theme'])) ? 'Default' : $_POST['theme'];
 		$custom_css = (empty($_POST['custom_css'])) ? '' : html::sanitizeURL($_POST['custom_css']);
-		$core->blog->settings->yash->put('yash_active',$active,'boolean');
-		$core->blog->settings->yash->put('yash_theme',$theme,'string');
-		$core->blog->settings->yash->put('yash_custom_css',$custom_css,'string');
+		$core->blog->settings->yash3->put('yash3_active',$active,'boolean');
+		$core->blog->settings->yash3->put('yash3_theme',$theme,'string');
+		$core->blog->settings->yash3->put('yash3_custom_css',$custom_css,'string');
+		
+		//To do, créer le file minifié ici yash3/syntaxhighlighter/js/shConcatened.js
+			
+		if(file_exists(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js")){
+		  //delete It
+		  unlink(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js");
+		}
+		//concat js files and minify them
+		$fContent = yash3_minify_js(
+			      get_file_content(dirname(__FILE__)."/syntaxhighlighter/js/shCore.js").
+			      get_file_content(dirname(__FILE__)."/syntaxhighlighter/js/shAutoloader.js").
+			      dcUtils::jsVar('yash_path',$core->blog->getPF('yash/syntaxhighlighter/js/')).
+			      get_file_content(dirname(__FILE__)."/js/public.js")
+			    );
+		//write the fiule
+		file_put_contents(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js",$fContent);
+		
 		$core->blog->triggerBlog();
 		dcPage::addSuccessNotice(__('Configuration successfully updated.'));
 		http::redirect($p_url);
@@ -146,7 +213,7 @@ $combo_theme = array(
 	);
 ?>
 
-<div id="yash_options">
+<div id="yash3_options">
 	<form method="post" action="<?php http::getSelfURI(); ?>">
 		<p>
 			<?php echo form::checkbox('active', 1, $active); ?>
@@ -166,7 +233,7 @@ $combo_theme = array(
 			<?php echo __('A location beginning with a / is treated as absolute, else it is treated as relative to the blog\'s current theme URL'); ?>
 		</p>
 
-		<p><input type="hidden" name="p" value="yash" />
+		<p><input type="hidden" name="p" value="yash3" />
 			<?php echo $core->formNonce(); ?>
 			<input type="submit" name="saveconfig" value="<?php echo __('Save configuration'); ?>" />
 		</p>

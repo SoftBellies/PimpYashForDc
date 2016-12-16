@@ -33,10 +33,10 @@ class dcYASH
 	{
 		global $core;
 
-		$core->blog->settings->addNamespace('yash');
-		if ($core->blog->settings->yash->yash_active)
+		$core->blog->settings->addNamespace('yash3');
+		if ($core->blog->settings->yash3->yash3_active)
 		{
-			$custom_css = $core->blog->settings->yash->yash_custom_css;
+			$custom_css = $core->blog->settings->yash3->yash3_custom_css;
 			if (!empty($custom_css)) {
 				if (strpos('/',$custom_css) === 0) {
 					$css = $custom_css;
@@ -49,7 +49,7 @@ class dcYASH
 				}
 			}
 			else {
-				$theme = (string)$core->blog->settings->yash->yash_theme;
+				$theme = (string)$core->blog->settings->yash3->yash3_theme;
 				if ($theme == '') {
 					$css = $core->blog->getPF('yash3/syntaxhighlighter/css/shThemeDefault.css');
 				} else {
@@ -66,10 +66,9 @@ class dcYASH
 	{
 		global $core;
 
-		$core->blog->settings->addNamespace('yash');
-		if ($core->blog->settings->yash->yash_active){
-			//to do differents files if  dotclear is path info or not
-			echo dcUtils::jsLoad($core->blog->getPF('yash3/syntaxhighlighter/js/shALLMinified.js'));
+		$core->blog->settings->addNamespace('yash3');
+		if ($core->blog->settings->yash3->yash3_active){
+			echo dcUtils::jsLoad($core->blog->getPF('yash3/syntaxhighlighter/js/shConcatened.js'));
 		}
 	}
 }

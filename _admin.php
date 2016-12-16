@@ -27,8 +27,8 @@ __('YASH').__('Yet Another Syntax Highlighter');
 
 $_menu['Blog']->addItem(__('YASH3'),
 		'plugin.php?p=yash3',
-		urldecode(dcPage::getPF('yash/icon.png')),
+		urldecode(dcPage::getPF('yash3/icon.png')),
 		preg_match('/plugin.php\?p=yash3(&.*)?$/',$_SERVER['REQUEST_URI']),
 		$core->auth->check('contentadmin',$core->blog->id));
 
-$core->addBehavior('adminPostEditor',array('yashBehaviors','adminPostEditor'));
+$core->addBehavior('adminPostEditor',array('yash3Behaviors','adminPostEditor'));

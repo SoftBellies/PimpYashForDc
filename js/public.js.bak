@@ -2,7 +2,7 @@ function shGetPath()
 {
 	var args = arguments, result = [];
 	for(var i = 0; i < args.length; i++)
-		result.push(args[i].replace('@', yash3_path));
+		result.push(args[i].replace('@', yash_path));
 	return result;
 };
 SyntaxHighlighter.autoloader.apply(null, shGetPath(
