@@ -25,10 +25,10 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 // dead but useful code, in order to have translations
 __('YASH').__('Yet Another Syntax Highlighter');
 
-$_menu['Blog']->addItem(__('YASH'),
-		'plugin.php?p=yash',
+$_menu['Blog']->addItem(__('YASH3'),
+		'plugin.php?p=yash3',
 		urldecode(dcPage::getPF('yash/icon.png')),
-		preg_match('/plugin.php\?p=yash(&.*)?$/',$_SERVER['REQUEST_URI']),
+		preg_match('/plugin.php\?p=yash3(&.*)?$/',$_SERVER['REQUEST_URI']),
 		$core->auth->check('contentadmin',$core->blog->id));
 
 $core->addBehavior('adminPostEditor',array('yashBehaviors','adminPostEditor'));

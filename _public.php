@@ -1,8 +1,10 @@
 <?php
 # ***** BEGIN LICENSE BLOCK *****
-# This file is part of YASH, a plugin for DotClear2.
-# Copyright (c) 2008 Pep and contributors. All rights
-# reserved.
+# This file is part of YASH3, a plugin for DotClear2.
+# Copyright (c) 2016 Gnieark https://blog-du-grouik.tinad.fr
+#
+# Forked and pimped from  Yash Copyright (c) 2008 Pep and contributors 
+# licensed under GNU/GPL license
 #
 # This plugin is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,13 +51,13 @@ class dcYASH
 			else {
 				$theme = (string)$core->blog->settings->yash->yash_theme;
 				if ($theme == '') {
-					$css = $core->blog->getPF('yash/syntaxhighlighter/css/shThemeDefault.css');
+					$css = $core->blog->getPF('yash3/syntaxhighlighter/css/shThemeDefault.css');
 				} else {
-					$css = $core->blog->getPF('yash/syntaxhighlighter/css/shTheme'.$theme.'.css');
+					$css = $core->blog->getPF('yash3/syntaxhighlighter/css/shTheme'.$theme.'.css');
 				}
 			}
 			echo
-				dcUtils::cssLoad($core->blog->getPF('yash/syntaxhighlighter/css/shCore.css')).
+				dcUtils::cssLoad($core->blog->getPF('yash3/syntaxhighlighter/css/shCore.css')).
 				dcUtils::cssLoad($css);
 		}
 	}
@@ -65,9 +67,9 @@ class dcYASH
 		global $core;
 
 		$core->blog->settings->addNamespace('yash');
-		if ($core->blog->settings->yash->yash_active)
-		{
-			echo dcUtils::jsLoad($core->blog->getPF('yash/syntaxhighlighter/js/shALLMinified.js'));
+		if ($core->blog->settings->yash->yash_active){
+			//to do differents files if  dotclear is path info or not
+			echo dcUtils::jsLoad($core->blog->getPF('yash3/syntaxhighlighter/js/shALLMinified.js'));
 		}
 	}
 }
