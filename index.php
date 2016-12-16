@@ -165,10 +165,10 @@ if (!empty($_POST['saveconfig'])) {
 		}
 		//concat js files and minify them
 		$fContent = yash3_minify_js(
-			      get_file_content(dirname(__FILE__)."/syntaxhighlighter/js/shCore.js").
-			      get_file_content(dirname(__FILE__)."/syntaxhighlighter/js/shAutoloader.js").
+			      file_get_contents(dirname(__FILE__)."/syntaxhighlighter/js/shCore.js").
+			      file_get_contents(dirname(__FILE__)."/syntaxhighlighter/js/shAutoloader.js").
 			      dcUtils::jsVar('yash_path',$core->blog->getPF('yash/syntaxhighlighter/js/')).
-			      get_file_content(dirname(__FILE__)."/js/public.js")
+			      file_get_contents(dirname(__FILE__)."/js/public.js")
 			    );
 		//write the fiule
 		file_put_contents(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js",$fContent);
