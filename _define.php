@@ -23,14 +23,14 @@
 if (!defined('DC_RC_PATH')) { return; }
 
 $this->registerModule(
-	/* Name */			"YASH Fork",
-	/* Description*/	"Fork of Yet Another Syntax Highlighter. Modification: Juste one javascript call on public pages for yash3",
+	/* Name */		"YASH Fork",
+	/* Description*/	"Fork of Yet Another Syntax Highlighter. Modification: Juste one javascript called on public pages for yash3",
 	/* Author */		"Forked and modified by Gnieark, origin Pep and contributors",
-	/* Version */		'1.6.3.2',
+	/* Version */		'0.56',
 	array(
 		/* Dependencies */	'requires' =>		array(array('core','2.9')),
 		/* Permissions */	'permissions' =>	'contentadmin',
 		/* Priority */		'priority' =>		1001,	// Must be higher than dcLegacyEditor priority (ie 1000)
-		/* Type */			'type' =>			'plugin'
+		/* Type */		'type' =>			'plugin'
 	)
 );

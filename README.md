@@ -1,8 +1,8 @@
 # Yash 3
 C'est un fork avec des modifications mineures du plugin Yash de Dotclear http://plugins.dotaddict.org/dc2/details/yash (By pep and contributors GNU/GPL v2)
 
-# devel Level
-alpha version
+# code tiers
+Minifier class wasmade  by Tedious https://github.com/tedious/JShrink BSD License.
 
 # Modifications apportées:
 

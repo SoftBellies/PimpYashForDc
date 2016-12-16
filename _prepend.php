@@ -13,5 +13,5 @@
 if (!defined('DC_RC_PATH')) { return; }
 
 $__autoload['yash3Behaviors'] = dirname(__FILE__).'/inc/yash3.behaviors.php';
-
+$__autoload['Minifier'] = dirname(__FILE__).'/inc/Minifier.php';
 $core->addBehavior('coreInitWikiPost',array('yash3Behaviors','coreInitWikiPost'));
