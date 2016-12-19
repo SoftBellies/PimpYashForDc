@@ -1,6 +1,9 @@
 # Yash 3
 C'est un fork avec des modifications mineures du plugin Yash de [Dotclear](https://fr.dotclear.org/ "dotclear") http://plugins.dotaddict.org/dc2/details/yash (By pep and contributors GNU/GPL v2)
 
+# Etat du dev
+reste un bug _ non fonctionnel tout de suite.
+
 # code tiers
 Minifier class was made  by Tedious https://github.com/tedious/JShrink BSD License.
 
