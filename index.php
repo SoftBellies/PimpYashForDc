@@ -3,8 +3,6 @@
 # This file is part of YASH3, a plugin for DotClear2.
 # Forked by (c) Gnieark https://blog-du-grouik.tinad.fr 2016
 # licensed as GPL V2
-# including minify function by tovic https://gist.github.com/tovic/d7b310dea3b33e4732c0
-# no explicit license
 #
 # Original dev is: Yash Copyright (c) 2008 Pep and contributors. All rights
 # reserved.
