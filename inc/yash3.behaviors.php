@@ -29,7 +29,7 @@ class yash3Behaviors
 
 	public static function coreInitWikiPost($wiki2xhtml)
 	{
-		$wiki2xhtml->registerFunction('macro:yash3',array('yashBehaviors','transform'));
+		$wiki2xhtml->registerFunction('macro:yash3',array('yash3Behaviors','transform'));
 	}
 
 	public static function transform($text,$args)

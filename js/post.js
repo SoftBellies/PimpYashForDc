@@ -37,7 +37,7 @@ jsToolBar.prototype.elements.yash3.fn.markdown = function() {
 };
 
 jsToolBar.prototype.elements.yash3.fncall.wiki = function() {
-	var stag = '\n///yash3 ' + this.elements.yash.data.syntax + '\n';
+	var stag = '\n///yash3 ' + this.elements.yash3.data.syntax + '\n';
 	var etag = '\n///\n';
 	this.encloseSelection(stag,etag);
 };
