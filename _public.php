@@ -51,7 +51,8 @@ class dcYASH
 
 		$core->blog->settings->addNamespace('yash3');
 		if ($core->blog->settings->yash3->yash3_active){
-			echo dcUtils::jsLoad($core->blog->getPF('yash3/syntaxhighlighter/js/shConcatened.js'));
+			echo dcUtils::jsLoad($core->blog->getPF('yash3/syntaxhighlighter/js/shConcatened'.
+			$core->blog->settings->yash3->yash3_concat_version.'.js'));
 		}
 	}
 }
