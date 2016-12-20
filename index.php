@@ -45,6 +45,7 @@ if (is_null($core->blog->settings->yash3->yash3_active)) {
 $active = (boolean)$core->blog->settings->yash3->yash3_active;
 $theme = (string)$core->blog->settings->yash3->yash3_theme;
 $custom_css = (string)$core->blog->settings->yash3->yash3_custom_css;
+$concat_version = (integer)$core->blog->settings->yash3->yash3_concat_version;
 
 if (!empty($_REQUEST['popup'])) {
 	$yash3_brushes = array(
@@ -110,25 +111,70 @@ if (!empty($_POST['saveconfig'])) {
 		$core->blog->settings->yash3->put('yash3_theme',$theme,'string');
 		$core->blog->settings->yash3->put('yash3_custom_css',$custom_css,'string');
 		
-		//To do, créer le file minifié ici yash3/syntaxhighlighter/js/shConcatened.js
-			
-		if(file_exists(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js")){
+		
+		$new_concat_version = (integer)$core->blog->settings->yash3->yash3_concat_version + 1;
+		
+		//Generate the CSS concatened
+		if(file_exists(dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$concat_version.".css")){
 		  //delete It
-		  unlink(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js");
+		  unlink(dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$concat_version.".css");
 		}
-		//concat js files and minify them
+		$custom_css = $core->blog->settings->yash3->yash3_custom_css;
+		if (!empty($custom_css)) {
+			if (strpos('/',$custom_css) === 0) {
+				$cssPathFile = DC_RC_PATH.$custom_css;
+			}
+			else {
+				$cssPathFile = 	DC_RC_PATH.
+					$core->blog->settings->system->themes_url."/".
+					$core->blog->settings->system->theme."/".
+					$custom_css;
+			}
+		}
+		else {
+			$theme = (string)$core->blog->settings->yash3->yash3_theme;
+			if ($theme == '') {
+				$cssPathFile = dirname(__FILE__)."/syntaxhighlighter/css/shThemeDefault.css";
+			} else {
+				$cssPathFile = dirname(__FILE__)."/syntaxhighlighter/css/shTheme".$theme.".css";
+			}
+		}
+		
+		$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shCore.css")."\n".
+			    file_get_contents($cssPathFile);
+	
+		// Remove comments
+		$fContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $fContent);
+		// Remove space after colons
+		$fContent = str_replace(': ', ':', $fContent);
+		// Remove whitespace
+		$fContent = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $fContent);
 
-
-		include_once(dirname(__FILE__).'/inc/Minifier.php');
-		$fContent = Minifier::minify(
+		file_put_contents(
+		    dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$new_concat_version.".css",
+		    $fContent
+		);
+		
+	
+		//Generate the JS
+		if(file_exists(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened".$concat_version.".js")){
+		  //delete It
+		  unlink(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened".$concat_version.".js");
+		}
+		include_once(dirname(__FILE__).'/inc/yash3JSMinifier.php');
+		$fContent = yash3JSMinifier::minify(
 			      file_get_contents(dirname(__FILE__)."/syntaxhighlighter/js/shCore.js").
 			      file_get_contents(dirname(__FILE__)."/syntaxhighlighter/js/shAutoloader.js").
 			      "\n var yash3_path=\"".$core->blog->getPF('yash3/syntaxhighlighter/js/')."\";\n".
 			      file_get_contents(dirname(__FILE__)."/js/public.js")
 			    );
-		//write the fiule
-		file_put_contents(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened.js",$fContent);
+		//write the file
+		file_put_contents(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened".$new_concat_version.".js",$fContent);
 		
+		
+		
+		//update concat version
+		$core->blog->settings->yash3->put('yash3_concat_version',$new_concat_version,'integer');
 		$core->blog->triggerBlog();
 		dcPage::addSuccessNotice(__('Configuration successfully updated.'));
 		http::redirect($p_url);
@@ -141,7 +187,7 @@ if (!empty($_POST['saveconfig'])) {
 ?>
 <html>
 <head>
-	<title><?php echo __('YASH'); ?></title>
+	<title><?php echo __('YASH3'); ?></title>
 </head>
 
 <body>
@@ -149,7 +195,7 @@ if (!empty($_POST['saveconfig'])) {
 	echo dcPage::breadcrumb(
 		array(
 			html::escapeHTML($core->blog->name) => '',
-			__('YASH') => ''
+			__('YASH3') => ''
 		));
 echo dcPage::notices();
 

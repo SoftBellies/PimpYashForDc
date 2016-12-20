@@ -3,7 +3,7 @@
 # This file is part of YASH3, a plugin for DotClear2.
 # Copyright (c) 2016 Gnieark https://blog-du-grouik.tinad.fr
 #
-# Forked and pimped from  Yash Copyright (c) 2008 Pep and contributors 
+# Forked and modified from  Yash Copyright (c) 2008 Pep and contributors 
 # licensed under GNU/GPL license
 #
 # This plugin is free software; you can redistribute it and/or modify
@@ -36,32 +36,15 @@ class dcYASH
 		$core->blog->settings->addNamespace('yash3');
 		if ($core->blog->settings->yash3->yash3_active)
 		{
-			$custom_css = $core->blog->settings->yash3->yash3_custom_css;
-			if (!empty($custom_css)) {
-				if (strpos('/',$custom_css) === 0) {
-					$css = $custom_css;
-				}
-				else {
-					$css =
-						$core->blog->settings->system->themes_url."/".
-						$core->blog->settings->system->theme."/".
-						$custom_css;
-				}
-			}
-			else {
-				$theme = (string)$core->blog->settings->yash3->yash3_theme;
-				if ($theme == '') {
-					$css = $core->blog->getPF('yash3/syntaxhighlighter/css/shThemeDefault.css');
-				} else {
-					$css = $core->blog->getPF('yash3/syntaxhighlighter/css/shTheme'.$theme.'.css');
-				}
-			}
-			echo
-				dcUtils::cssLoad($core->blog->getPF('yash3/syntaxhighlighter/css/shCore.css')).
-				dcUtils::cssLoad($css);
+		  echo dcUtils::cssLoad(
+			$core->blog->getPF(
+					  "yash3/syntaxhighlighter/css/shThemeConcatened".
+					  $core->blog->settings->yash3->yash3_concat_version.
+					  ".css"
+			)
+		  );
 		}
 	}
-
 	public static function publicFooterContent()
 	{
 		global $core;

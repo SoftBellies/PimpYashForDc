@@ -29,7 +29,7 @@
  * @author Robert Hafner <tedivm@tedivm.com>
  * @license http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
-class Minifier
+class yash3JSMinifier
 {
     /**
      * The input javascript to be minified.
@@ -105,7 +105,7 @@ class Minifier
         try {
             ob_start();
 
-            $jshrink = new Minifier();
+            $jshrink = new yash3JSMinifier();
             $js = $jshrink->lock($js);
             $jshrink->minifyDirectToOutput($js, $options);
 
