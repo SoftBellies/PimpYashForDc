@@ -26,3 +26,5 @@ Les noms de fichiers (css et js) générés sont incrémentés à chaque modific
 
 # Installation
 Installez ce plugin en copiant l'url suivante https://www.ventresmous.fr/public/yash/yash3.zip directement dans l'interface de Dotclear pour l'installer.
+
+Pensez à désactiver le plugin yash si vous l'aviez installé.
