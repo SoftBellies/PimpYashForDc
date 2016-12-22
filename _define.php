@@ -26,7 +26,7 @@ $this->registerModule(
 	/* Name */		"YASH Fork",
 	/* Description*/	"Fork of Yet Another Syntax Highlighter. Modification: Juste one javascript called on public pages for yash3",
 	/* Author */		"Forked and modified by Gnieark, origin Pep and contributors",
-	/* Version */		'0.8',
+	/* Version */		'0.8.1',
 	array(
 		/* Dependencies */	'requires' =>		array(array('core','2.9')),
 		/* Permissions */	'permissions' =>	'usage,contentadmin',

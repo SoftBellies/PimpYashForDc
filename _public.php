@@ -36,43 +36,45 @@ class dcYASH
 	  * send the css or js file
 	  * Don't take care about all path vars
 	  */
+	  global $core;
 	  
 	  list($osef,$ext) = explode(".",$args);
-	  switch($args){
+	  switch($ext){
 	    case "css":
 	      $ext = "css";
+	      header("Content-type: text/css");
 	      break;
 	     case "js":
+	      header('Content-Type: application/javascript');
 	      $ext = "js";
 	      break;
 	    default:
-	      self::p404();
+	      throw new Exception ("Page not found",404);
 	      break;
 	  }
 	  
 	  $fileToSend = path::real(DC_VAR)."/yash3/".
 			$core->blog->id."/".
-			$core->blog->settings->yash3->yash3_concat_version.
+			$core->blog->settings->yash3->yash3_concat_version.".".
 			$ext;
 	  if(file_exists($fileToSend)){
 	    echo file_get_contents($fileToSend);
 	  }else{
-	    self::p404();
+	    throw new Exception ("Page not found",404);
 	  }
 	}
 	public static function publicHeadContent()
 	{
 		global $core;
-
+		error_log($core->blog->url.$core->url->getBase('yash3'));
 		$core->blog->settings->addNamespace('yash3');
 		if ($core->blog->settings->yash3->yash3_active)
 		{
 		  echo dcUtils::cssLoad(
-			$core->blog->getPF(
-					  "yash3/syntaxhighlighter/css/shThemeConcatened".
-					  $core->blog->settings->yash3->yash3_concat_version.
-					  ".css"
-			)
+			$core->blog->url.$core->url->getBase('yash3')."/".
+			$core->blog->settings->yash3->yash3_concat_version.
+			".css"
+			
 		  );
 		}
 	}
@@ -82,8 +84,11 @@ class dcYASH
 
 		$core->blog->settings->addNamespace('yash3');
 		if ($core->blog->settings->yash3->yash3_active){
-			echo dcUtils::jsLoad($core->blog->getPF('yash3/syntaxhighlighter/js/shConcatened'.
-			$core->blog->settings->yash3->yash3_concat_version.'.js'));
+			echo dcUtils::jsLoad(
+					      $core->blog->url.$core->url->getBase('yash3')."/".
+					      $core->blog->settings->yash3->yash3_concat_version.
+					      ".js"
+					     );
 		}
 	}
 }

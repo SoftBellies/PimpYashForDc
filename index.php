@@ -139,7 +139,7 @@ if (!empty($_POST['saveconfig'])) {
 		//Generate the CSS concatened
 		if(file_exists($cssPreviousFileRealPath)){
 		  //delete It
-		  unlink(dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$concat_version.".css");
+		  unlink($cssPreviousFileRealPath);
 		}
 		$custom_css = $core->blog->settings->yash3->yash3_custom_css;
 		if (!empty($custom_css)) {
@@ -166,11 +166,11 @@ if (!empty($_POST['saveconfig'])) {
 			    file_get_contents($cssPathFile);
 	
 		// Remove comments
-		$fContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $fContent);
+		//$fContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $fContent);
 		// Remove space after colons
-		$fContent = str_replace(': ', ':', $fContent);
+		//$fContent = str_replace(': ', ':', $fContent);
 		// Remove whitespace
-		$fContent = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $fContent);
+		//$fContent = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $fContent);
 
 		//create the file
 		file_put_contents( $cssFutureFileRealPath, $fContent );
