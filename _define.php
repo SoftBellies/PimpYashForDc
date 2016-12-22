@@ -29,7 +29,7 @@ $this->registerModule(
 	/* Version */		'0.7.1',
 	array(
 		/* Dependencies */	'requires' =>		array(array('core','2.9')),
-		/* Permissions */	'permissions' =>	'contentadmin',
+		/* Permissions */	'permissions' =>	'usage,contentadmin',
 		/* Priority */		'priority' =>		1001,	// Must be higher than dcLegacyEditor priority (ie 1000)
 		/* Type */		'type' =>		'plugin'
 	)

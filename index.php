@@ -45,7 +45,6 @@ if (is_null($core->blog->settings->yash3->yash3_active)) {
 $active = (boolean)$core->blog->settings->yash3->yash3_active;
 $theme = (string)$core->blog->settings->yash3->yash3_theme;
 $custom_css = (string)$core->blog->settings->yash3->yash3_custom_css;
-$concat_version = (integer)$core->blog->settings->yash3->yash3_concat_version;
 
 if (!empty($_REQUEST['popup'])) {
 	$yash3_brushes = array(
@@ -114,8 +113,31 @@ if (!empty($_POST['saveconfig'])) {
 		
 		$new_concat_version = (integer)$core->blog->settings->yash3->yash3_concat_version + 1;
 		
+		$cssPreviousFileRealPath = path::real(DC_VAR)."/yash3/".
+					    $core->blog->id."/".
+					    $core->blog->settings->yash3->yash3_concat_version.
+					    ".css";
+		$cssFutureFileRealPath = path::real(DC_VAR)."/yash3/".
+					    $core->blog->id."/".
+					    ((integer)$core->blog->settings->yash3->yash3_concat_version + 1).
+					    ".css";
+		$jsPreviousFileRealPath = path::real(DC_VAR)."/yash3/".
+					    $core->blog->id."/".
+					    $core->blog->settings->yash3->yash3_concat_version.
+					    ".js";
+		$jsFutureFileRealPath = path::real(DC_VAR)."/yash3/".
+					    $core->blog->id."/".
+					    ((integer)$core->blog->settings->yash3->yash3_concat_version + 1).
+					    ".js";				
+						
+		if(!is_dir(dirname($jsFutureFileRealPath))){
+		  //probably the first use of the plugin, the pach does no exists. create it:
+		  files::makeDir(dirname($jsFutureFileRealPath),true);
+		}
+		
+		
 		//Generate the CSS concatened
-		if(file_exists(dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$concat_version.".css")){
+		if(file_exists($cssPreviousFileRealPath)){
 		  //delete It
 		  unlink(dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$concat_version.".css");
 		}
@@ -150,16 +172,14 @@ if (!empty($_POST['saveconfig'])) {
 		// Remove whitespace
 		$fContent = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $fContent);
 
-		file_put_contents(
-		    dirname(__FILE__)."/syntaxhighlighter/css/shThemeConcatened".$new_concat_version.".css",
-		    $fContent
-		);
+		//create the file
+		file_put_contents( $cssFutureFileRealPath, $fContent );
 		
 	
 		//Generate the JS
-		if(file_exists(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened".$concat_version.".js")){
+		if(file_exists($jsPreviousFileRealPath)){
 		  //delete It
-		  unlink(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened".$concat_version.".js");
+		  unlink($jsPreviousFileRealPath);
 		}
 		include_once(dirname(__FILE__).'/inc/yash3JSMinifier.php');
 		$fContent = yash3JSMinifier::minify(
@@ -169,7 +189,7 @@ if (!empty($_POST['saveconfig'])) {
 			      file_get_contents(dirname(__FILE__)."/js/public.js")
 			    );
 		//write the file
-		file_put_contents(dirname(__FILE__)."/syntaxhighlighter/js/shConcatened".$new_concat_version.".js",$fContent);
+		file_put_contents($jsFutureFileRealPath,$fContent);
 		
 		
 		

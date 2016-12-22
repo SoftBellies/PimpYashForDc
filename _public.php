@@ -26,9 +26,40 @@ if (!defined('DC_RC_PATH')) { return; }
 
 $core->addBehavior('publicHeadContent',		array('dcYASH','publicHeadContent'));
 $core->addBehavior('publicFooterContent',	array('dcYASH','publicFooterContent'));
+$core->url->register('yash3','yash3','^yash3(?:/(.+))?$',array('dcYASH','getVarFile'));
 
 class dcYASH
 {
+	public static function getVarFile($args)
+	{
+	  /*
+	  * send the css or js file
+	  * Don't take care about all path vars
+	  */
+	  
+	  list($osef,$ext) = explode(".",$args);
+	  switch($args){
+	    case "css":
+	      $ext = "css";
+	      break;
+	     case "js":
+	      $ext = "js";
+	      break;
+	    default:
+	      self::p404();
+	      break;
+	  }
+	  
+	  $fileToSend = path::real(DC_VAR)."/yash3/".
+			$core->blog->id."/".
+			$core->blog->settings->yash3->yash3_concat_version.
+			$ext;
+	  if(file_exists($fileToSend)){
+	    echo file_get_contents($fileToSend);
+	  }else{
+	    self::p404();
+	  }
+	}
 	public static function publicHeadContent()
 	{
 		global $core;
