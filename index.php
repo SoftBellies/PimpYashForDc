@@ -142,28 +142,20 @@ if (!empty($_POST['saveconfig'])) {
 		  unlink($cssPreviousFileRealPath);
 		}
 		$custom_css = $core->blog->settings->yash3->yash3_custom_css;
-		if (!empty($custom_css)) {
-			if (strpos('/',$custom_css) === 0) {
-				$cssPathFile = DC_RC_PATH.$custom_css;
-			}
-			else {
-				$cssPathFile = 	DC_RC_PATH.
-					$core->blog->settings->system->themes_url."/".
-					$core->blog->settings->system->theme."/".
-					$custom_css;
-			}
+		if (!empty($custom_css)) {	
+		  $fContent = $custom_css;
 		}
 		else {
 			$theme = (string)$core->blog->settings->yash3->yash3_theme;
 			if ($theme == '') {
-				$cssPathFile = dirname(__FILE__)."/syntaxhighlighter/css/shThemeDefault.css";
+				$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shThemeDefault.css");
 			} else {
-				$cssPathFile = dirname(__FILE__)."/syntaxhighlighter/css/shTheme".$theme.".css";
+				$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shTheme".$theme.".css");
 			}
 		}
 		
 		$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shCore.css")."\n".
-			    file_get_contents($cssPathFile);
+			    $fContent;
 	
 		// Remove comments
 		$fContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $fContent);
@@ -212,12 +204,12 @@ if (!empty($_POST['saveconfig'])) {
 	<script type="text/javascript">
 	//I hate jquery
 	$(document).ready(function(){
-	  $("select").change(function(){
+	  $("select").change(function(){;
 	    $(this).find("option:selected").each(function(){
 	      if($(this).attr("value")=="Custom"){
-		  $(".hidden").show();
+		  $("#pcustomcss").show();
 	      }else{
-		  $(".hidden").hide();
+		  $("#pcustomcss").hide();
 	      }
 	    });
 	  }).change();
@@ -238,7 +230,7 @@ echo dcPage::notices();
 
 $combo_theme = array(
 	__('Default')         	=> 'Default',
-	__('Css personnalisé')	=> 'Custom',
+	__('Custom css')	=> 'Custom',
 	__('Django')          	=> 'Django',
 	__('Eclipse')         	=> 'Eclipse',
 	__('Emacs')           	=> 'Emacs',
@@ -264,7 +256,7 @@ $combo_theme = array(
 		<p class="field"><label for="theme" class="classic"><?php echo __('Theme:'); ?> </label>
 			<?php echo form::combo('theme',$combo_theme,$theme); ?>
 		</p>
-		<p class="field hidden">
+		<p class="field" id="pcustomcss">
 			<label for="custom_css" class="classic"><?php echo __('Use custom CSS:') ; ?> </label>
 			<?php echo form::textarea('customCss',80,20, $customCss); ?>
 		</p>
