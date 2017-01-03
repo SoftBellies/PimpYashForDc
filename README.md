@@ -14,7 +14,7 @@ Ce module permet de la coloration syntaxique lors de la citation de codes dans u
 # Code tiers
 Minifier class was made  by Tedious https://github.com/tedious/JShrink BSD License.
 
-# Modifications apportées par ce Fork:
+# Modifications apportées:
 
 Le plugin Yash insère plusieurs appels à des scripts javascripts, et ajoute des variables JS dans le footer de la page.
 Yash3 concatène tout ça pour ne mettre qu'un seul script en référence.
