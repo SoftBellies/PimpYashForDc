@@ -204,7 +204,7 @@ if (!empty($_POST['saveconfig'])) {
 	<script type="text/javascript">
 	//I hate jquery
 	$(document).ready(function(){
-	  $("select").change(function(){;
+	  $("#theme").change(function(){;
 	    $(this).find("option:selected").each(function(){
 	      if($(this).attr("value")=="Custom"){
 		  $("#pcustomcss").show();
@@ -261,7 +261,7 @@ $combo_theme = array(
 			<?php echo form::textarea('customCss',80,20, $customCss); ?>
 		</p>
 		<p class="info">
-			<?php echo __('You can use a custom CSS. Paste it on the textarea'); ?>
+			<?php echo __('You can use a custom CSS. Select custom CSS and paste it on the textarea'); ?>
 		</p>
 
 		<p><input type="hidden" name="p" value="yash3" />
