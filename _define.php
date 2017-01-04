@@ -1,7 +1,10 @@
 <?php
 # ***** BEGIN LICENSE BLOCK *****
-# This file is part of YASH, a plugin for DotClear2.
-# Copyright (c) 2008 Pep and contributors. All rights
+# This file is part of YASH3, a plugin for DotClear2.
+# Forked by (c) Gnieark https://blog-du-grouik.tinad.fr 2016
+# licensed as GPL V2
+#
+# Original dev is: Yash Copyright (c) 2008 Pep and contributors. All rights
 # reserved.
 #
 # This plugin is free software; you can redistribute it and/or modify
@@ -24,9 +27,9 @@ if (!defined('DC_RC_PATH')) { return; }
 
 $this->registerModule(
 	/* Name */		"YASH Fork",
-	/* Description*/	"Fork of Yet Another Syntax Highlighter. Modification: Juste one javascript called on public pages for yash3",
-	/* Author */		"Forked and modified by Gnieark, origin Pep and contributors",
-	/* Version */		'0.8.1',
+	/* Description*/	"Fork from Yet Another Syntax Highlighter. Modification: Juste one javascript called on public pages for yash3",
+	/* Author */		"Forked and modified by Gnieark, origin: Pep and contributors",
+	/* Version */		'0.9',
 	array(
 		/* Dependencies */	'requires' =>		array(array('core','2.9')),
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
