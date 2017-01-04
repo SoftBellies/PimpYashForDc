@@ -44,7 +44,7 @@ if (is_null($core->blog->settings->yash3->yash3_active)) {
 // Getting current parameters
 $active = (boolean)$core->blog->settings->yash3->yash3_active;
 $theme = (string)$core->blog->settings->yash3->yash3_theme;
-$custom_css = (string)$core->blog->settings->yash3->yash3_custom_css;
+$customCss = (string)$core->blog->settings->yash3->yash3_custom_css;
 
 if (!empty($_REQUEST['popup'])) {
 	$yash3_brushes = array(
@@ -105,10 +105,10 @@ if (!empty($_POST['saveconfig'])) {
 		$core->blog->settings->addNameSpace('yash3');
 		$active = (empty($_POST['active'])) ? false : true;
 		$theme = (empty($_POST['theme'])) ? 'Default' : $_POST['theme'];
-		$custom_css = (empty($_POST['custom_css'])) ? '' : html::sanitizeURL($_POST['custom_css']);
+		$customCss = (empty($_POST['customCss'])) ? '' : $_POST['customCss'];
 		$core->blog->settings->yash3->put('yash3_active',$active,'boolean');
 		$core->blog->settings->yash3->put('yash3_theme',$theme,'string');
-		$core->blog->settings->yash3->put('yash3_custom_css',$custom_css,'string');
+		$core->blog->settings->yash3->put('yash3_custom_css',$customCss,'string');
 		
 		
 		$new_concat_version = (integer)$core->blog->settings->yash3->yash3_concat_version + 1;
@@ -142,35 +142,27 @@ if (!empty($_POST['saveconfig'])) {
 		  unlink($cssPreviousFileRealPath);
 		}
 		$custom_css = $core->blog->settings->yash3->yash3_custom_css;
-		if (!empty($custom_css)) {
-			if (strpos('/',$custom_css) === 0) {
-				$cssPathFile = DC_RC_PATH.$custom_css;
-			}
-			else {
-				$cssPathFile = 	DC_RC_PATH.
-					$core->blog->settings->system->themes_url."/".
-					$core->blog->settings->system->theme."/".
-					$custom_css;
-			}
+		if (!empty($custom_css)) {	
+		  $fContent = $custom_css;
 		}
 		else {
 			$theme = (string)$core->blog->settings->yash3->yash3_theme;
 			if ($theme == '') {
-				$cssPathFile = dirname(__FILE__)."/syntaxhighlighter/css/shThemeDefault.css";
+				$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shThemeDefault.css");
 			} else {
-				$cssPathFile = dirname(__FILE__)."/syntaxhighlighter/css/shTheme".$theme.".css";
+				$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shTheme".$theme.".css");
 			}
 		}
 		
 		$fContent = file_get_contents(dirname(__FILE__)."/syntaxhighlighter/css/shCore.css")."\n".
-			    file_get_contents($cssPathFile);
+			    $fContent;
 	
 		// Remove comments
-		//$fContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $fContent);
+		$fContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $fContent);
 		// Remove space after colons
-		//$fContent = str_replace(': ', ':', $fContent);
+		$fContent = str_replace(': ', ':', $fContent);
 		// Remove whitespace
-		//$fContent = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $fContent);
+		$fContent = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $fContent);
 
 		//create the file
 		file_put_contents( $cssFutureFileRealPath, $fContent );
@@ -208,6 +200,23 @@ if (!empty($_POST['saveconfig'])) {
 <html>
 <head>
 	<title><?php echo __('YASH3'); ?></title>
+	
+	<script type="text/javascript">
+	//I hate jquery
+	$(document).ready(function(){
+	  $("#theme").change(function(){;
+	    $(this).find("option:selected").each(function(){
+	      if($(this).attr("value")=="Custom"){
+		  $("#pcustomcss").show();
+	      }else{
+		  $("#pcustomcss").hide();
+	      }
+	    });
+	  }).change();
+	 });
+	</script>
+	
+	
 </head>
 
 <body>
@@ -220,18 +229,19 @@ if (!empty($_POST['saveconfig'])) {
 echo dcPage::notices();
 
 $combo_theme = array(
-	__('Default')         => 'Default',
-	__('Django')          => 'Django',
-	__('Eclipse')         => 'Eclipse',
-	__('Emacs')           => 'Emacs',
-	__('Fade to gray')    => 'FadeToGrey',
-	__('Material')        => 'Material',
-	__('MD Ultra')        => 'MDUltra',
-	__('Midnight')        => 'Midnight',
-	__('RDark')           => 'RDark',
-	__('Solarized Dark')  => 'SolarizedDark',
-	__('Solarized Light') => 'SolarizedLight',
-	__('Tomorrow Night')  => 'TomorrowNight'
+	__('Default')         	=> 'Default',
+	__('Custom css')	=> 'Custom',
+	__('Django')          	=> 'Django',
+	__('Eclipse')         	=> 'Eclipse',
+	__('Emacs')           	=> 'Emacs',
+	__('Fade to gray')    	=> 'FadeToGrey',
+	__('Material')        	=> 'Material',
+	__('MD Ultra')        	=> 'MDUltra',
+	__('Midnight')        	=> 'Midnight',
+	__('RDark')           	=> 'RDark',
+	__('Solarized Dark')  	=> 'SolarizedDark',
+	__('Solarized Light') 	=> 'SolarizedLight',
+	__('Tomorrow Night')  	=> 'TomorrowNight'
 	);
 ?>
 
@@ -246,13 +256,12 @@ $combo_theme = array(
 		<p class="field"><label for="theme" class="classic"><?php echo __('Theme:'); ?> </label>
 			<?php echo form::combo('theme',$combo_theme,$theme); ?>
 		</p>
-		<p class="field">
+		<p class="field" id="pcustomcss">
 			<label for="custom_css" class="classic"><?php echo __('Use custom CSS:') ; ?> </label>
-			<?php echo form::field('custom_css',40,128,$custom_css); ?>
+			<?php echo form::textarea('customCss',80,20, $customCss); ?>
 		</p>
 		<p class="info">
-			<?php echo __('You can use a custom CSS by providing its location.'); ?><br />
-			<?php echo __('A location beginning with a / is treated as absolute, else it is treated as relative to the blog\'s current theme URL'); ?>
+			<?php echo __('You can use a custom CSS. Select custom CSS and paste it on the textarea'); ?>
 		</p>
 
 		<p><input type="hidden" name="p" value="yash3" />
@@ -261,6 +270,5 @@ $combo_theme = array(
 		</p>
 	</form>
 </div>
-
 </body>
 </html>
