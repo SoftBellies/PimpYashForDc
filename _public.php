@@ -78,17 +78,18 @@ class dcYASH
 		  );
 		}
 	}
-	public static function publicFooterContent()
-	{
-		global $core;
+        public static function publicFooterContent()
+        {
+                global $core;
+                $core->blog->settings->addNamespace('yash3');
+                if ($core->blog->settings->yash3->yash3_active){
 
-		$core->blog->settings->addNamespace('yash3');
-		if ($core->blog->settings->yash3->yash3_active){
-			echo dcUtils::jsLoad(
-					      $core->blog->url.$core->url->getBase('yash3')."/".
-					      $core->blog->settings->yash3->yash3_concat_version.
-					      ".js"
-					     );
-		}
-	}
+                        $jsURL = $core->blog->url.$core->url->getBase('yash3')."/".
+                                              $core->blog->settings->yash3->yash3_concat_version.
+                                              ".js";
+
+                        echo '<script async src="'.$jsURL.'"></script>';
+                }
+        }
+
 }
