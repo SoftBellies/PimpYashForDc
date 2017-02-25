@@ -26,10 +26,10 @@
 if (!defined('DC_RC_PATH')) { return; }
 
 $this->registerModule(
-	/* Name */		"YASH Fork",
+	/* Name */		"YASH3",
 	/* Description*/	"Fork from Yet Another Syntax Highlighter. Modification: Juste one javascript called on public pages for yash3",
 	/* Author */		"Forked and modified by Gnieark, origin: Pep and contributors",
-	/* Version */		'0.9.2',
+	/* Version */		'0.9.3',
 	array(
 		/* Dependencies */	'requires' =>		array(array('core','2.9')),
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
